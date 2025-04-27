@@ -7,7 +7,7 @@ Este repositório contém minha entrega referente à avaliação técnica basead
 
 ## ✅ Objetivo
 
-Implementar os repositórios `Category` e `Product` seguindo os padrões da Clean Architecture, aplicar a migration `Initial` e conectar a aplicação com uma instância de SQL Server no Azure.
+Implementar os repositórios `Category` e `Product` seguindo os padrões da Clean Architecture, aplicar a migration `Initial` e conectar a aplicação com uma instância de SQL Server Localmente
 
 ---
 
@@ -17,17 +17,13 @@ Implementar os repositórios `Category` e `Product` seguindo os padrões da Clea
 - [x] Configurações com `EntityTypeConfiguration` para `Category` e `Product`
 - [x] Injeção de dependência configurada (`DependencyInjectionAPI`)
 - [x] Migration `Initial` criada com `HasData()` para categorias
-- [x] Banco de dados SQL Server criado no Azure
-- [x] Migration aplicada com sucesso no Azure via `dotnet ef database update`
+- [x] Banco de dados SQL Server criado Localmente
+- [x] Migration aplicada com sucesso no SSMS `dotnet ef database update`
 
 ---
 # 🔧 Comandos utilizados
 ## Criação da migration
 dotnet ef migrations add Initial --project Infra.Data --startup-project WebAPI
-
-## Aplicação no banco de dados (Azure)
-dotnet ef database update --project Infra.Data --startup-project WebAPI
-
 
 ## Aplicação no banco de dados (Azure)
 dotnet ef database update --project Infra.Data --startup-project WebAPI
@@ -41,20 +37,11 @@ dotnet ef database update --project Infra.Data --startup-project WebAPI
 # ☁️ Configuração no Azure
 SQL Server criado no portal Azure
 
-Banco de dados nomeado: avaliacao_tp2_aluno
-
-IP local autorizado no firewall
+Banco de dados nomeado: DbHelpAPP
 
 Autenticação SQL ativada
 
 Migration aplicada com sucesso diretamente do Visual Studio Terminal
-
-# 🖼️ Prints de evidência (opcional)
-Insira prints aqui comprovando:
-
-Aplicação bem-sucedida da migration no Azure
-
-Tabelas e dados populados
 
 # 👨‍💻 Dados do aluno
 Nome: Vitor Hugo Bonilha Zanatta Silva
