@@ -2,7 +2,6 @@
 using HelpApp.Domain.Entities;
 using HelpApp.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
-using HelpApp.Domain.Validation;
 
 namespace HelpApp.Infra.Data.Repositories
 {
@@ -15,38 +14,56 @@ namespace HelpApp.Infra.Data.Repositories
             _context = context;
         }
 
-        public async Task<Category> Create(Category category)
+        public async Task<IEnumerable<Category>> GetCategories()
         {
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
-            return category;
+            return await _context.Categories.Include(c => c.Products).ToListAsync();
         }
 
         public async Task<Category> GetById(int? id)
         {
-            return await _context.Categories.FirstOrDefaultAsync(c => c.Id == id) ?? throw new DomainExceptionValidation("Catehoria não encontrada");
+            if (!id.HasValue)
+            {
+                return null;
+            }
+            return await _context.Categories.Include(c => c.Products).FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task<IEnumerable<Category>> GetCategories()
+        public async Task<Category> Create(Category category)
         {
-            return await _context.Categories.ToListAsync();
-        }
-
-        public async Task<Category> Remove(Category category)
-        {
-            Category categoryToDelete = await GetById(category.Id) ?? throw new DomainExceptionValidation("Erro ao deletar a categoria");
-            _context.Categories.Remove(categoryToDelete);
+            await _context.Categories.AddAsync(category);
             await _context.SaveChangesAsync();
-            return categoryToDelete;
+            return category;
         }
 
         public async Task<Category> Update(Category category)
         {
-            Category categoryDB = await GetById(category.Id) ?? throw new DomainExceptionValidation("Erro ao atualizar a categoria");
-            categoryDB!.Name = category.Name;
-            _context.Categories.Update(categoryDB);
+            var existingCategory = await _context.Categories.FindAsync(category.Id);
+            if (existingCategory == null)
+            {
+                return null;
+            }
+
+            _context.Entry(existingCategory).CurrentValues.SetValues(category);
             await _context.SaveChangesAsync();
-            return categoryDB;
+            return category;
+        }
+
+        public async Task<Category> Remove(Category category)
+        {
+            var existingCategory = await _context.Categories.Include(c => c.Products).FirstOrDefaultAsync(c => c.Id ==  category.Id);
+            if (existingCategory.Products?.Any() == true)
+            {
+                return null;
+            }
+
+            if (existingCategory.Products?.Any() == true)
+            {
+                _context.Products.RemoveRange(existingCategory.Products);
+            }
+
+            _context.Categories.Remove(existingCategory);
+            await _context.SaveChangesAsync();
+            return category;
         }
     }
 }
