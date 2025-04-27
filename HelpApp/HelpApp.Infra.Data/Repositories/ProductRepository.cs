@@ -2,7 +2,6 @@
 using HelpApp.Domain.Entities;
 using HelpApp.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
-using HelpApp.Domain.Validation;
 
 namespace HelpApp.Infra.Data.Repositories
 {
@@ -14,51 +13,40 @@ namespace HelpApp.Infra.Data.Repositories
             _context = context;
         }
 
-        public async Task<Product> Create(Product product)
+        public async Task<IEnumerable<Product>> GetProducts()
         {
-            if (product == null) throw new DomainExceptionValidation("Produto inválido!");
-
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
-
-            return product;           
+            return await _context.Products.Include(p => p.Category).ToListAsync();
         }
 
         public async Task<Product> GetById(int? id)
         {
-            return await _context.Products.FirstOrDefaultAsync(p => p.Id == id) ?? throw new DomainExceptionValidation("Produto não encontrado");
+            if (!id.HasValue)
+            {
+                return null;
+            }
+
+            return await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id.Value);
         }
 
-        public async Task<IEnumerable<Product>> GetProducts()
+        public async Task<Product> Create(Product product)
         {
-            return await _context.Products.ToListAsync();
-        }
-
-        public async Task<Product> Remove(Product product)
-        {
-            if (product == null) throw new DomainExceptionValidation("Produto inválido para remoção");
-
-            Product productDB = await GetById(product.Id);
-            _context.Products.Remove(productDB);
+            await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
-            return productDB;
+            return product;
         }
 
         public async Task<Product> Update(Product product)
         {
-            if (product == null) throw new DomainExceptionValidation("Produto inválido para edição");
-            Product productDB = await GetById(product.Id);
-
-            productDB.Description = product.Description;
-            productDB.CategoryId = product.CategoryId;
-            productDB.Price = product.Price;
-            productDB.Stock = product.Stock;
-            productDB.Image = product.Image;
-
-            _context.Products.Update(productDB);
+            _context.Products.Update(product);
             await _context.SaveChangesAsync();
+            return product;
+        }
 
-            return productDB;
+        public async Task<Product> Remove(Product product)
+        {
+            _context?.Products.Remove(product);
+            await _context.SaveChangesAsync();
+            return product;
         }
     }
 }

@@ -7,6 +7,7 @@ namespace HelpApp.Domain.Entities
         #region Atributos
         public int Id { get; set; }
         public string Name { get; set; }
+        public ICollection<Product> Products { get; set; }
         #endregion
 
         #region Construtores
@@ -21,8 +22,6 @@ namespace HelpApp.Domain.Entities
             Id = id;
             ValidateDomain(name);
         }
-
-        public ICollection<Product> Products { get; set; }
         #endregion
 
         #region Validação
