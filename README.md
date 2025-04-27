@@ -25,7 +25,7 @@ Implementar os repositórios `Category` e `Product` seguindo os padrões da Clea
 ## Criação da migration
 dotnet ef migrations add Initial --project Infra.Data --startup-project WebAPI
 
-## Aplicação no banco de dados (Azure)
+## Aplicação no banco de dados (SQL)
 dotnet ef database update --project Infra.Data --startup-project WebAPI
 
 # 🔗 String de conexão (mascarada)
@@ -34,8 +34,8 @@ dotnet ef database update --project Infra.Data --startup-project WebAPI
   "DefaultConnection": "Server=tcp:servidor-sql-aluno.database.windows.net,1433;Initial Catalog=NomeDoBanco;Persist Security Info=False;User ID=aluno_azure;Password=********;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
 }
 
-# ☁️ Configuração no Azure
-SQL Server criado no portal Azure
+# ☁️ Configuração no SQL/SSMS
+SQL Server criado no SSMS
 
 Banco de dados nomeado: DbHelpAPP
 
